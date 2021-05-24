@@ -1,0 +1,85 @@
+﻿version: "3.7"
+
+## 注意：コンテナ間通信を伴うhost名の指定はcontainer_nameで指定すること
+## また、networkdsを指定して同一ネットワーク名を指定しておくこと
+services:
+  # サービス名は自由に設定
+  # DB
+  db:
+    container_name: django-database
+    image: mysql:5.7
+    restart: always
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "43306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: docker
+      MYSQL_DATABASE: docker
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+    networks:
+      - app-net
+
+  # Webサーバー
+  # nginx:
+  #   image: nginx:stable
+  #   container_name: nginx
+  #   ports:
+  #     - "80:80"
+  #   depends_on:
+  #     - db
+  #   volumes:
+  #     - ./gunicorn.conf:/etc/nginx/conf.d/default.conf
+  #     - static_volume:/usr/share/nginx/html/static
+  #     - media_volume:/usr/share/nginx/html/media
+  #   networks:
+  #     - app-net
+
+  # アプリサーバー＋Djnago
+  # gunicorn:
+  #   image: gunicorn:stable
+  #   container_name: gunicorn
+  #   # appディレクトリの中から`Dockerfile`を探す
+  #   build: ./app
+  #   depends_on:
+  #     - nginx
+  #   # コンテナ起動後に実行するコマンド
+  #   # staticファイルの収集とwsgiサーバーの起動を行う
+  #   command: >
+  #     bash -c "python manage.py collectstatic --noinput &&
+  #     cp .env.dev .env &&
+  #     echo y | python manage.py makemigrations --merge &&
+  #     python manage.py migrate &&
+  #     gunicorn --bind gunicorn:8000 app.wsgi"
+
+  #   # データを永続化させる場合の設定。`host:container`でパスを記載
+  #   volumes:
+  #     - ./app/:/usr/src/app/
+  #     - gunicorn:/var/run/gunicorn
+  #     - static_volume:/usr/share/nginx/html/static
+  #     - media_volume:/usr/share/nginx/html/media
+  #   # 開放するポートを指定。`host:container`でポートを記載
+  #   expose:
+  #     - 8000
+  #   ports:
+  #     - 8000:8000
+  #   # 環境変数を指定
+  #   environment:
+  #     # 1ならデバックモード
+  #     - DEBUG=1
+  #     # setting.pyに記載されているSECRET_KEYを記入
+  #     - SECRET_KEY=test_secret
+  #   networks:
+  #     - app-net
+
+# コンテナ間通信はネットワークを定義する必要がある
+networks:
+  app-net:
+    external: true
+    driver: bridge
+
+volumes:
+  gunicorn:
+    driver: local
+  static_volume:
+  media_volume:

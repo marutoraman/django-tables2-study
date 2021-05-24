@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}マニュアル{% endblock %}
+
+{% block contents %}
+ <section>
+	<div class="section-header">
+		<h1> マニュアル </h1>
+	</div>
+	<p>{{sample}}</p>
+	<div class="container">
+		<div class="row">
+			<div class="col-12 col-md-12 col-lg-12">
+				<div class="card">
+					<div class="card-header">
+						<h4>説明動画</h4>
+					</div>
+					<div class="card-body">
+						<iframe width="560" height="315" src="https://www.youtube.com/embed/Or0wrtfpgAo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header">
+						<h4>１．商品情報登録</h4>
+					</div>
+					<div class="card-body">
+						<p>リサーチしたいURLやキーワードを登録してください。除外キーワードや除外ASINの設定も可能です。</p>
+						<!--<iframe width="560" height="315" src="https://www.youtube.com/embed/Xq0zZpZnLzc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>-->
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header">
+						<h4>２．利益設定</h4>
+					</div>
+					<div class="card-body">
+						<p>金額毎の利益値を設定してください。</p>
+						<!--<iframe width="560" height="315" src="https://www.youtube.com/embed/Xq0zZpZnLzc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>-->
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header">
+						<h4>３．出品共有項目設定</h4>
+					</div>
+					<div class="card-body">
+						<p>出品用Excelに記載する共通項目の設定を行ってください。</p>
+						<!--<iframe width="560" height="315" src="https://www.youtube.com/embed/Xq0zZpZnLzc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>-->
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header">
+						<h4>４．商品一覧</h4>
+					</div>
+					<div class="card-body">
+						<p>取得した商品の一覧が表示されるので画像選択やExcel出力が行えます。</p>
+						<!--<iframe width="560" height="315" src="https://www.youtube.com/embed/Xq0zZpZnLzc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>-->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+{% endblock %}

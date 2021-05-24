@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load render_table from django_tables2 %}
+{% load static %}
+{% block title %} 取得状況 {% endblock %}
+
+{% block contents %}
+<div class="container">
+    <div class="row">
+        <selection>
+            <div class="section-header">
+               <h1> 取得状況 </h1>
+            </div>
+            <div>
+                <form id="main-form" class="form-horizontal" role="form" method="POST">
+                    {% csrf_token %}
+                    <button name="delete" type="submit" class="btn btn-danger" id="delete">選択した登録を削除</button>
+                    <div class="mt-2 container-fluid">
+                        <div class="table table-hover syuppin-item-table">
+                            {% render_table table %}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </selection>
+    </div>
+</div>
+{% endblock %}

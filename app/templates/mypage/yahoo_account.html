@@ -1,0 +1,100 @@
+﻿{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}ヤフオクアカウント設定{% endblock %}
+{% block contents %}
+     <section>
+        <div class="section-header">
+            <h1> ヤフオクアカウント設定 </h1>
+        </div>
+        <div class="section-body">
+            <div class="row">
+                <div class="col-12 col-md-12 col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <form id="main-form" role="form" method="POST">
+                                {% csrf_token %}
+                                <div id="account_limit" value="{{user.account_count}}" hidden>{{user.account_count}}</div>
+                                <div>最大『{{user.account_count}}』 アカウントまで登録が可能です</div>
+                                <div id="input_form">
+                                    {% for yahoo_account in yahoo_account_obj %}
+                                        <div class="mt-2">
+                                            <div class='form-inline'>
+                                                <label class="mr-2">
+                                                    {{ forloop.counter }} : </label>
+                                                <input class="form-control" name="yahoo_account_id"
+                                                    value="{{ yahoo_account.yahoo_account_id }}" placeholder="ヤフオクID" disabled></input>
+                                                <input class="form-control ml-2" name="yahoo_pass"
+                                                    value="{{ yahoo_account.yahoo_pass }}" placeholder="パスワード"></input>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="mt-2">
+                                    <button id="add_account_btn" type="button" class="btn btn-secondary">行追加</button>
+                                    <button id="submit_account_btn" type="submit" class="btn btn-primary">登録</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block script %}
+    <script>
+        // ヤフオクアカウント変更時に再度GET
+        $("#id_yahoo_account_id").change(function(){
+            let form = $('#main-form');
+            $("[name='csrfmiddlewaretoken']").remove()
+            form.attr("method","GET"); // GETに変更
+            form.submit();
+        });
+
+        // 行追加ボタンクリック時に入力行を追加する
+        $("#add_account_btn").on("click",function(event){
+            event.preventDefault()
+            let elmCount = $('[name="yahoo_account_id"]').length
+            // 最大アカウント数の場合は追加しない
+            if(elmCount >= Number($('#account_limit').text())){
+                alert(`登録できません。ご契約の最大アカウント数は${$('#account_limit').text()}です。`)
+                return false
+            }
+            // input-formの末尾に追加
+            $('#input_form').append(
+                `<div class="mt-2">\
+                    <div class="form-inline">\
+                        <label class="mr-2">\
+                            ${elmCount + 1} : </label>\
+                        <input class="form-control" name="yahoo_account_id"\
+                            value="{{ yahoo_account.yahoo_account_id }}"\
+                            placeholder="ヤフオクID"></input>\
+                        <input class="form-control ml-2" name="yahoo_pass"\
+                            value="{{ yahoo_account.yahoo_pass }}" placeholder="パスワード"></input>\
+                    </div>\
+                </div>`)
+        })
+
+        // yahoo_account_idをdisbleのままPOSTするとサーバー側で値を受け取れないので
+        // 一旦disableを解除する
+        $("#submit_account_btn").on("click",function(event){
+            event.preventDefault()
+            // 重複IDチェック
+            let vals = $('[name="yahoo_account_id"]').map(function(){
+            return $(this).val();
+            }).get();
+            let checkVal = new Set(vals)
+            if(vals.length != checkVal.size){
+                alert("アカウントIDが重複しています")
+                return false
+            }
+
+            $('[name="yahoo_account_id"]').removeAttr('disabled')
+            $('#main-form').submit();
+        })
+        
+    </script>
+{% endblock %}

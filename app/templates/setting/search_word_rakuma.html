@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}キーワード・URL設定{% endblock %}
+
+{% block contents %}
+ <section>
+	<div class="section-header">
+		<h1> キーワード・URL設定 </h1>
+	</div>
+	<p></p>
+	<div class="container">
+		<div class="row">
+			<div class="col-12 col-md-12 col-lg-12">
+				<div class="card">
+					<div>
+						<nav class="nav nav-tabs">
+							<a class="nav-link" href="{% url 'setting:fetch-url' %}">URL登録</a>
+							<a class="nav-link" href="{% url 'setting:search-word' %}">キーワード登録(メルカリ)</a>
+							<a class="nav-link active" href="{% url 'setting:search-word-rakuma' %}">キーワード登録(ラクマ)</a>
+						</nav>
+					</div>
+					<div class="card-body">
+						{% if form.errors %}
+							{% for field in form %}
+								<div class="text-danger">
+									{% for error in field.errors %}
+										{{field.label}}: {{ error|escape }}
+									{% endfor %}
+								</div>
+							{% endfor %}
+						{% endif %}
+						{% if error_message %}
+							<div class="text-danger">
+									{{error_message}}
+							</div>
+						{% endif %}
+						{% if result %}
+							<div class="text-primary">
+								{{ form.search_words.label }} : {{result}}を登録しました。
+							</div>
+						{% endif %}
+						<form method="POST">
+							{% csrf_token %}
+							{{ form.non_field_errors }}
+							<div class='col-offset-2 col-10'>
+								<button type='submit' class='btn btn-primary'>登録</button>
+							</div>
+							<div class='form-group mt-2'>
+								<labal class='col-4 control-label'>{{ form.max_page_num.label }}</labla>
+								<div class='col-8'>{{ form.max_page_num|add_class:"form-control"}}</div>
+							</div>
+							<div class='form-group'>
+								<labal class='col-4 control-label'>{{ form.search_words.label }}</labla>
+								<div class='col-8'>{{ form.search_words}}</div>
+							</div>
+
+							<div class='col-offset-2 col-10'>
+								<input type="hidden" name="rakuma">
+								<button type='submit' class='btn btn-primary'>登録</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}ASIN設定{% endblock %}
+
+{% block contents %}
+ <section>
+	<div class="section-header">
+		<h1> ASIN設定 </h1>
+	</div>
+	<p></p>
+	<div class="container">
+		<div class="row">
+			<div class="col-12 col-md-12 col-lg-12">
+				<div class="card">
+					<div>
+						<nav class="nav nav-tabs">
+							<a class="nav-link active" href="{% url 'setting:asin' %}">ASIN登録</a>
+							<a class="nav-link" href="{% url 'setting:exclude-asin' %}">除外ASIN</a>
+							<a class="nav-link" href="{% url 'setting:exclude-word' %}">除外ワード</a>
+						  </nav>
+
+					</div>
+					<div class="card-body">
+						{% if form.errors %}
+							{% for field in form %}
+								<div class="text-danger">
+									{% for error in field.errors %}
+										{{field.label}}: {{ error|escape }}
+									{% endfor %}
+								</div>
+							{% endfor %}
+						{% endif %}
+						{% if messages %}
+							<ul class="messages_ul">
+								{% for message in messages %}
+									<li class="alert{% if message.tags %} alert-{{ message.tags }}{% endif %} alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ message }}</li>
+								{% endfor %}
+							</ul>
+						{% endif %}
+						<form method="POST">
+							{% csrf_token %}
+							{{ form.non_field_errors }}
+							<div class='col-offset-2 col-10'>
+								{%if form.submit %}
+								<button type='submit' class='btn btn-primary'>登録</button>
+								{% endif %}
+							</div>
+							<div class='form-group'>
+								<span class="col-4 control-label" >{{ form.yahoo_account_id.label }}</span>
+								{% if form.yahoo_account_id.value != None %}
+									<div class='col-4'><input class="form-control" name="yahoo_account_id" value="{{ form.yahoo_account_id.value }}" readonly></input></div>
+								{% else %}
+									<div class='col-4'>{{ form.yahoo_account_id|add_class:"form-control" }}</div>
+								{% endif %}
+							</div>
+							<div class='form-group'>
+								<labal class='col-4 control-label'>{{ form.asin_group_id.label }}（重複しないわかりやすい名称をつけてください）</labla>
+								{% if form.asin_group_id.value != None %}
+									<div class='col-4'><input class="form-control" name="asin_group_id"  id="id_asin_group_id" value="{{ form.asin_group_id.value }}" readonly></input></div>
+								{% else %}
+									<div class='col-4'><input class="form-control" name="asin_group_id" id="id_asin_group_id" value=""></input></div>
+								{% endif %}
+							</div>
+							<div class='form-group'>
+								<labal class='col-4 control-label'>{{ form.asins.label }}（最大１万件まで登録可能）</labla>
+								<div class='col-8'>{{ form.asins|add_class:"textarea-wide form-control" }}</div>
+							</div>
+
+							<div class='col-offset-2 col-10'>
+								{%if form.submit %}
+								<button type='submit' class='btn btn-primary'>登録</button>
+								{% endif %}
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+{% endblock %}

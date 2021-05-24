@@ -1,0 +1,333 @@
+.small-image{
+    width:70px;
+}
+
+.table-image{
+    max-width:150px;
+}
+
+.syuppin-item-table{
+    width:120%;
+}
+
+.item-field{
+    width:500px;
+    min-width:500px;
+}
+
+.category-field{
+    width:200px;
+}
+
+.description-field{
+    width:500px;
+    height:100px;
+}
+
+.description-field textarea{
+    min-height: 100%;
+}
+
+
+.status-field{
+    width:100px;
+}
+
+.price-field{
+    width:150px;
+}
+
+
+.textarea-wide{
+    width:100%;
+    min-height:600px;
+}
+
+.textarea-small{
+    width:100%;
+    min-height:200px;
+}
+
+.modal-searchconditions-box{
+    margin: 0px 52px;
+}
+
+.modal-label-title{
+   width: 114px;
+}
+
+.modal-witde{
+    width: 135%;
+    max-width: 135%;
+}  
+
+.modal-list-layout ul li {
+        list-style: none;
+        display: inline;
+        margin: 0 18px 0 0;
+}
+
+.modal-list-layout ul {
+    display: inline;
+    margin: 0 -38px;
+}
+
+.sticky-table thead th {
+    /* 縦スクロール時に固定する */
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    /* tbody内のセルより手前に表示する */
+    z-index: 1;
+    background-color:#e3eaef!important;
+}
+
+.sticky-table th:first-child {
+    /* 横スクロール時に固定する */
+    position: -webkit-sticky;
+    position: sticky;
+    left: 0;
+}
+
+.sticky-table thead th:first-child {
+    /* ヘッダー行内の他のセルより手前に表示する */
+    z-index: 2;
+}
+
+.sticky-table .fixed-column{
+    position: sticky;
+    content: "";
+    position: absolute;
+    
+}
+
+.cart-seller{
+    border-radius:5px;
+    color: #212529;
+    text-align: center;
+}
+
+.cart-seller.amazon{
+    background-color:#FF9900;
+}
+
+.cart-seller.unknown{
+    background-color:#6c757d;
+}
+
+.cart-seller.FBA{
+    background-color:#47c363;
+}
+
+.cart-seller.merchant{
+    background-color:#3abaf4;
+    font-size: 0; 
+}
+
+.cart-seller.merchant::before{
+    font-size: 14px;
+    content:"自己発";
+}
+
+.total-price{
+    font-size:16px;
+    font-weight: bold;
+    color:#fd7e14;
+}
+
+.total-price::before{
+    content:"合計:￥";
+}
+
+.main-price::before{
+    content:"本体:￥";
+}
+
+.point::before{
+    content:"ﾎﾟｲﾝﾄ:";
+}
+
+.shipping-price::before{
+    content:"送料:￥";
+}
+
+
+.profit{
+    font-size:20px;
+    font-weight: bold;
+    color:#fc544b;
+}
+
+.profit::before{
+    content:"￥";
+}
+
+.description-label{
+    vertical-align:top;
+}
+
+.syuppin-stat-0::before{
+    color: #6c757d;
+    content: "未対応";
+    text-align: center;
+}
+
+.syuppin-stat-1::before{
+    color: #47c363;
+    content: "出品予約済";
+}
+
+.syuppin-stat-2::before{
+    color: #fc544b;
+    content: "出品中";
+    text-align: center;
+}
+
+.syuppin-stat-3::before{
+    color: #3abaf4;
+    content: "終了(落札者なし)";
+}
+
+.syuppin-stat-4::before{
+    color: #3abaf4;
+    content: "終了(落札者あり)";
+}
+
+.btn-yahoo{
+    background: #FFDA45;
+    color: #252525;
+    border-color: #FFDA45;
+}
+
+.eval-stat-0::before{
+    color: #6c757d;
+    content: "評価前";
+}
+
+.eval-stat-1::before{
+    color: #47c363;
+    content: "評価予約";
+}
+
+.eval-stat-2::before{
+    color: #3abaf4;
+    content: "評価完了";
+}
+
+.nav-link.active{
+    background-color:#6777ef!important;
+    color:#fff!important;
+}
+
+.form-disable{
+    pointer-events: none;
+    color: #888;
+    backgroud-color: #dbdcdd;
+    border-width: 0px;
+    box-shadow: none;
+}
+
+.form-search-group{
+    max-width: 50rem;
+}
+
+.amazon-price{
+    color:tomato ;
+}
+
+.table-checkbox{
+    vertical-align: middle;
+    text-align: center;
+    margin-bottom: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.table-checkbox-scale{
+    transform:scale(2.0);
+}
+
+.table-col-thin {
+    width: 2%;
+}
+
+.table-col-1{
+    width:10%;
+}
+.table-col-2 {
+    width: 20%;
+}
+
+.table-col-5 {
+    width: 50%;
+}
+
+.hidden-checkbox {
+    display: none;
+}
+
+.image-selector input[type="checkbox"]:checked + .target-image,
+.image-selector input[type="checkbox"]:checked + .target-image2{
+  border-style: solid; 
+  border-width: 5px;
+  border-color: #007bff;
+  z-index:9999;
+}
+
+.target-image {
+    display: block;
+    transition-duration: 0.5s;
+    z-index:9999;
+}
+.target-image:hover {
+    transform: scale(1.3,1.3);
+    transition-duration: 0.5s;
+    z-index:9999;
+}
+.target-image2:hover {
+    transform: scale(2.0,2.0);
+    transition-duration: 0.5s;
+    z-index:9999;
+}
+
+.mercari-icon{
+    line-height: 60px;
+    background: url(../icon/mercari_icon.jpg) no-repeat;
+    background-size: contain;
+
+}
+
+.rakuma-icon{
+    line-height: 60px;
+    background: url(../icon/rakuma_icon.png) no-repeat;
+    background-size: contain;
+
+}
+
+.is-alert-row{
+    background-color:#b9c1ff;
+}
+
+.delete-icon{
+    color:#ff0000;
+
+}
+
+.alert-icon{
+    color: #ffa426;
+}
+
+table{
+    counter-reset: rowCount;
+  }
+  tbody tr{
+    counter-increment: rowCount;
+  }
+  tbody tr td:nth-child(2)::before{
+    content: counter(rowCount);
+  }
+
+.table-header-checkbox-hidden th input[type=checkbox]{
+    display:none;
+}

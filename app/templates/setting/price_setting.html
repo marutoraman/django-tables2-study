@@ -1,0 +1,88 @@
+﻿{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}価格設定{% endblock %}
+{% block contents %}
+     <section>
+        <div class="section-header">
+            <h1> 出品価格設定 </h1>
+        </div>
+        <div class="section-body">
+            <div class="row">
+                <div class="col-12 col-md-12 col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <form id="main-form" class="form-inline" role="form" method="POST">
+                                {% csrf_token %}
+                                {{ form.non_field_errors }}
+                                <div class="mt-2">
+                                    <div class='form-group'>
+                                        <span class="mr-2" >ヤフオクアカウント</span>
+                                        <div>{{ form.yahoo_account_id|add_class:"form-control" }}</div>
+                                    </div>
+                                </dov>
+                                <div class="mt-2">
+                                    <div class='form-group'>
+                                        <span class="mr-2" >レンジ1</span>
+                                        <div>{{ form.price_range1|add_class:"form-control" }}</div>　→　
+                                        <div>{{ form.price_rate1|add_class:"form-control" }}</div>
+                                    </div>
+                                </dov>
+                                <div class="mt-2">
+                                    <div class='form-group'>
+                                        <span class="mr-2">レンジ2</span>
+                                        <div>{{ form.price_range2|add_class:"form-control" }}</div>　→　
+                                        <div>{{ form.price_rate2|add_class:"form-control" }}</div>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <div class='form-group'>
+                                        <span class="mr-2">レンジ3</span>
+                                        <div>{{ form.price_range3|add_class:"form-control" }}</div>　→　
+                                        <div>{{ form.price_rate3|add_class:"form-control" }}</div>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <div class='form-group'>
+                                        <span class="mr-2">レンジ4</span>
+                                        <div>{{ form.price_range4|add_class:"form-control" }}</div>　→　
+                                        <div>{{ form.price_rate4|add_class:"form-control" }}</div>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <div class='form-group'>
+                                        <span class="mr-2">レンジ5</span>
+                                        <div>{{ form.price_range5|add_class:"form-control" }}</div>　→　
+                                        <div>{{ form.price_rate5|add_class:"form-control" }}</div>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <div class='form-group'>
+                                        <span class="mr-2">開始価格と即決価格の差額</span>
+                                        <div>{{ form.sokketsu_price_offset|add_class:"form-control" }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-offset-2 col-sm-10 mt-2">
+                                    <button type="submit" class="btn btn-primary">登録</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block script %}
+    <script>
+        // ヤフオクアカウント変更時に再度GET
+        $("#id_yahoo_account_id").change(function(){
+            let form = $('#main-form');
+            $("[name='csrfmiddlewaretoken']").remove()
+            form.attr("method","GET"); // GETに変更
+            form.submit();
+        });
+    </script>
+{% endblock %}

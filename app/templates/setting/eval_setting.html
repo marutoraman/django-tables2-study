@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}評価設定{% endblock %}
+
+{% block header %}
+      
+{% endblock %}
+
+{% block contents %}
+	<div class="section-header">
+		<h1> 評価設定 </h1>
+	</div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="content-box-large">
+               <div class="card">
+                    <div class="card-body">
+                        <form id="main-form" class="form-horizontal" role="form" method="POST">
+                            {% csrf_token %}
+                            {{ form.non_field_errors }}
+                            {% for field in form %}
+                                <div class="form-group">
+                                    <div>
+                                        <label for="{{ field.id_for_label }}" class="col-4 control-label">{{ field.label_tag}}</label>
+                                        <div class="col-4">{{ field|add_class:"form-control" }}</div>
+                                        {{ field.errors }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary">登録</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        // ヤフオクアカウント変更時に再度GET
+        $("#id_yahoo_account_id").change(function(){
+            let form = $('#main-form');
+            $("[name='csrfmiddlewaretoken']").remove()
+            form.attr("method","GET"); // GETに変更
+            form.submit();
+        });
+    </script>
+{% endblock %}

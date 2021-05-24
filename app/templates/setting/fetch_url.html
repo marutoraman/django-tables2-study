@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}キーワード・URL設定{% endblock %}
+
+{% block contents %}
+ <section>
+	<div class="section-header">
+		<h1> キーワード・URL設定 </h1>
+	</div>
+	<p></p>
+	<div class="container">
+		<div class="row">
+			<div class="col-12 col-md-12 col-lg-12">
+				<div class="card">
+					<div>
+						<nav class="nav nav-tabs">
+							<a class="nav-link active" href="{% url 'setting:fetch-url' %}">URL登録</a>
+							<a class="nav-link" href="{% url 'setting:search-word' %}">キーワード登録(メルカリ)</a>
+							<a class="nav-link" href="{% url 'setting:search-word-rakuma' %}">キーワード登録(ラクマ)</a>
+						</nav>
+					</div>
+					<div class="mt-2">
+					{% if messages %}
+                        <ul class="messages_ul">
+                            {% for message in messages %}
+                            <li class="alert{% if message.tags %} alert-{{ message.tags }}{% endif %} alert-dismissible text-dark"
+                                role="alert"><button type="button" class="close" data-dismiss="alert"
+                                    aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+					{% endif %}
+					</div>
+					<div>
+						{% if form.errors %}
+							{% for field in form %}
+								<div class="text-danger">
+									{% for error in field.errors %}
+										{{field.label}}: {{ error|escape }}
+									{% endfor %}
+								</div>
+							{% endfor %}
+						{% endif %}
+						{% if error_message %}
+							<div class="text-danger">
+									{{error_message}}
+							</div>
+						{% endif %}
+						{% if result %}
+							<div class="text-primary">
+								URL {{result}} を登録しました。
+							</div>
+						{% endif %}
+					</div>
+					{% if not messages %}
+					<div class="card-body">
+						<form method="POST">
+							{% csrf_token %}
+							{{ form.non_field_errors }}
+							<div class='col-offset-2 col-10'>
+								<button type='submit' class='btn btn-primary'>登録</button>
+							</div>
+							<div class='form-group mt-2'>
+								<labal class='col-4 control-label'>{{ form.urls.label }}</labla>
+								<div class='col-8'>{{ form.urls}}</div>
+							</div>
+
+							<div class='col-offset-2 col-10'>
+								<button type='submit' class='btn btn-primary'>登録</button>
+							</div>
+						</form>
+					</div>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+{% endblock %}

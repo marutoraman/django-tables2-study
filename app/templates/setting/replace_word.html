@@ -1,0 +1,130 @@
+﻿{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}置換ワード設定{% endblock %}
+{% block contents %}
+     <section>
+        <div class="section-header">
+            <h1> 置換ワード設定 </h1>
+        </div>
+        <p>商品名、説明文から「対象ワード」に設定した文字列を検索し、「置換ワード」に置き換えます。<BR>
+        「置換ワード」を空欄にした場合は「対象ワード」は削除されます。<BR>
+        アラート表示をONにした場合は、対象ワードが含まれる商品は強調して表示されます。(この場合、置換ワードは無効)<BR>
+        CSVファイルを使用して、一括アップロードが可能です。<BR>
+        <a href="{% static 'replace_word_template.csv' %}" download="{% static 'replace_word_template.csv' %}">CSVフォーマットはこちらからダウンロード</a>
+        <div class="section-body">
+            <div class="row">
+                <div class="col-12 col-md-12 col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            {% if messages %}
+							<ul class="messages_ul">
+								{% for message in messages %}
+									<li class="alert{% if message.tags %} alert-{{ message.tags }}{% endif %} alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ message }}</li>
+								{% endfor %}
+							</ul>
+						    {% endif %}
+                            <form id="main-form" role="form" method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="text-right">
+                                    <button name="delete-all" id="delete-all" class="btn btn-danger mt-2 pull-right">全削除</button>
+                                </div>
+                                <div class="custom-file w-50">
+                                    <input type="file" name="input-file" class="custom-file-input" id="inputFile">
+                                    <label class="custom-file-label" for="inputFile" data-browse="参照">ファイルを選択(ここにドロップすることもできます)</label>
+                                </div>
+                                <button name="import-csv" class="btn btn-primary mt-2">CSVから登録(追記)</button>
+                                
+                                <div id="input_form" class="mt-3">
+                                    <div class="mt-2">
+                                        <div class='form-inline ml-2'>
+                                            <span class="col-4 mr-2">
+                                                対象ワード</span>
+                                            <span class="col-4 ml-2 mr-2">
+                                                置換ワード</span>
+                                        </div>
+                                    </div>
+                                    {% for word in replace_word_obj %}
+                                        <div class="mt-2">
+                                            <div class='form-inline'>
+                                                <label class="mr-2">
+                                                    {{ forloop.counter }} : </label>
+                                                <input class="col-4 form-control" name="base_word"
+                                                    value="{{ word.base_word }}" placeholder="対象ワード"></input>
+                                                <input class="col-4 form-control ml-2" name="replace_word"
+                                                    value="{{ word.replace_word }}" placeholder="置換ワード"></input>
+                                                <label class="col-2 text-left"><input type="checkbox" class="form-control ml-2" name="is_alert_{{forloop.counter}}"
+                                                    {{ word.is_alert|yesno:"checked," }} value="True"></input>アラート表示</label>
+                                                <button name="delete" class="ml-1 btn btn-light" value="{{word.pk}}">
+                                                    <i class="fas fa-trash-alt fa-lg delete-icon"></i>
+                                                </button>
+                                            </div>  
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="mt-2">
+                                    <button id="add_btn" type="button" class="btn btn-primary">行追加</button>
+                                    <button id="submit_btn" type="submit" class="btn btn-primary">登録</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block script %}
+    <script>
+
+        // 行追加ボタンクリック時に入力行を追加する
+        $("#add_btn").on("click",function(event){
+            event.preventDefault()
+
+            // input-formの末尾に追加
+            $('#input_form').append(
+                `<div class="mt-2">\
+                    <div class='form-inline'>\
+                        <label class="mr-2">\
+                            {% if not forloop.counter %}
+                            X
+                            {% endif%}
+                            {{ forloop.counter }} : </label>\
+                        <input class="col-4 form-control" name="base_word" value="{{ word.base_word }}"\
+                            placeholder="対象ワード"></input>\
+                        <input class="col-4 form-control ml-2" name="replace_word" value="{{ word.replace_word }}"\
+                            placeholder="置換ワード"></input>\
+                        <label class="col-2 float-left"><input type="checkbox" class="form-control ml-2" name="is_alert_{{forloop.counter}}" \
+                            {{ word.is_alert|yesno:"checkd," }} value="True"></input>アラート表示</label>\
+                    </div>\
+                </div>`)
+        })
+
+        // yahoo_account_idをdisbleのままPOSTするとサーバー側で値を受け取れないので
+        // 一旦disableを解除する
+        $("#submit_btn").on("click",function(event){
+            event.preventDefault()
+            // 重複IDチェック
+            let vals = $('[name="base_word"]').map(function(){
+            return $(this).val();
+            }).get();
+            let checkVal = new Set(vals)
+            if(vals.length != checkVal.size){
+                alert("対象ワードが重複しています")
+                return false
+            }
+            $('#main-form').submit();
+        })
+        
+        $("#delete-all").on("click",function(event){
+            const res = window.confirm("全ての設定を削除します。よろしいですか？");
+            if(!res){
+                event.preventDefault();
+            }
+            
+        })
+
+    </script>
+{% endblock %}
