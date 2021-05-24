@@ -277,7 +277,7 @@ Django既定では、ModelやViewは、models.pyやviews.pyといった１つの
 
 
 =====
-以降は作成中。
+★★★★★★★★　　以降は作成中。　★★★★★★★★　　
 
 ### Tableへのデータ表示、編集、削除(CRUD)
 ### Excel出力
