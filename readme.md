@@ -37,8 +37,8 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-### Djangoプロジェクト作成、アプリの作成
-- Djangoプロジェクトを任意の名称で作成し、以下の４つのアプリを作成します。  
+### 課題0:Djangoプロジェクト作成、アプリの作成
+Djangoプロジェクトを任意の名称で作成し、以下の４つのアプリを作成します。  
 settings.pyにもアプリ名を追記してください。  
 ```
 mypage:マイページ関連
@@ -94,23 +94,29 @@ https://github.com/marutoraman/django-bootrap-template
 案件では、基本的には過去案件のコピペが可能ですが、新規のテンプレートを適用する場合は  
 以下の作業を行う必要があります。
 
-- 以下からテンプレート一式ダウンロードする
+- 以下からテンプレート一式ダウンロードする  
 https://github.com/stisla/stisla
 
-- モジュールのコピー
+- モジュールのコピー  
 assetsフォルダをtemplatesフォルダにコピーする
 
-- base.htmlの作成
+- base.htmlの作成  
 ダウンロードしたファイルのpages/layout-default.htmlをtemplatesにコピーして、base.htmlにリネームする。
 
-<section class="section">の中身の要素を全て削除する。
-section内は具体的なページ毎のコンテンツに相当するため、baseに記述は不要。
-（<section>は削除しない。sectionの中身(下層)の要素を削除するが、footer等を削除するわけでない）
+```
+<section class="section">
+```
+の配下の要素を全て削除する。  
+section内は具体的なページ毎のコンテンツに相当するため、baseに記述は不要。  
+（<section>は削除しない。sectionの中身(下層)の要素を削除するが、footer等を削除するわけでない）  
 
-必要な外部リンクを記述する
-以下のように使用するCSSのCDNをbase.htmlのheadタグ内に記載する。（バージョンはその時期に合わせて適切に選択する）
-※本テンプレートのBootstrapバージョンは4である前提。
-簡単にするために公式で公開されているものは全てCDNで指定しているが、ローカルにダウンロードした方が初期のパフォーマンスは早くなるの可能性があるので、ローカルにダウンロードしても良い。
+必要な外部リンクを記述する  
+以下のように使用するCSSのCDNをbase.htmlのheadタグ内に記載する。  
+（バージョンはその時期に合わせて適切に選択する）  
+※本テンプレートのBootstrapバージョンは4である前提。  
+簡単にするために公式で公開されているものは全てCDNで指定しているが  
+ローカルにダウンロードした方が初期のパフォーマンスは早くなるの可能性があるので  
+ローカルにダウンロードしても良い。  
 
 css系(bootstrapとfontawesome)
 ```
@@ -129,9 +135,9 @@ javascript系(jquery、ajax、bootstrap)
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 ```
 
-公式がCDNで公開していないライブラリについては、ローカルにダウンロードして、staticでアクセスする。
-プロジェクト内にリンクしている箇所をstaticのタグで置き換える。
-これにより、staticが実際のPATHに置き換わるので、環境に関わらず動作する。
+公式がCDNで公開していないライブラリについては、ローカルにダウンロードして、staticでアクセスする。  
+プロジェクト内にリンクしている箇所をstaticのタグで置き換える。  
+これにより、staticが実際のPATHに置き換わるので、環境に関わらず動作する。  
 
 base.htmlの一番上に以下を記載することで、staticという名前でstaticフォルダのpathが参照可能になる。
 ```
@@ -156,15 +162,15 @@ base.htmlのbodyの下部に以下のassetsの情報を追記する。
 
 ![template](https://i.gyazo.com/4ce6468143c9740a2ca87566557de494.png)
 
-サイトバー、Navバーについては、案件に合わせて必要なメニューへのリンクを記述する。
-fontsomeaweを使用すると、キレイなアイコンをクラス指定だけで使うことができるのでおすすめ
-CDNは上記で指定しているので、下記を参考に、このみのアイコンを使用する。
-https://fontawesome.com/icons?d=gallery&p=2
+サイトバー、Navバーについては、案件に合わせて必要なメニューへのリンクを記述する。  
+fontsomeaweを使用すると、キレイなアイコンをクラス指定だけで使うことができるのでおすすめ  
+CDNは上記で指定しているので、下記を参考に、このみのアイコンを使用する。  
+https://fontawesome.com/icons?d=gallery&p=2  
 
 
 
 ### 課題3:ルーティングの作成
-- app/urls.pyや各アプリのurlsを作成して、ルーティングを定義してください。  
+以下を参考にして、app/urls.pyや各アプリのurlsを作成して、ルーティングを定義してください。  
 最終的には、作成したページ全てのルーティングを行う必要がありますが、  
 ここでは、以下のルートのurls.pyの作成と、settingアプリのurls.pyを作成してください。  
 以下で示しているsetting/urls.pyに対して、今回使用するsampleページへのルーティングを追記してください。
@@ -237,26 +243,26 @@ tamplates/setting/sample.html
 ```
 
 ### フォルダ構造について
-Django既定では、ModelやViewは、models.pyやviews.pyといった１つのファイルを
-１アプリにつき１ファイルずつ用意するようになっていますが
-規模が大きくなると管理するのが困難になります。
-そこで本案件では、modelsやviewsといったフォルダを作成し
-そこに、sample.pyなどの各ファイルを格納していく方式を採用しています。
+Django既定では、ModelやViewは、models.pyやviews.pyといった１つのファイルを  
+１アプリにつき１ファイルずつ用意するようになっていますが  
+規模が大きくなると管理するのが困難になります。  
+そこで本案件では、modelsやviewsといったフォルダを作成し  
+そこに、sample.pyなどの各ファイルを格納していく方式を採用しています。  
 
-そのため、既定のmodels.py等のファイルは削除して、代りにmodelsフォルダを
+そのため、既定のmodels.py等のファイルは削除して、代りにmodelsフォルダを  
 アプリ内に作成します。
 
 #### 実装したい要件
-フォーム画面からDBに情報を登録、変更、表示を行いたい。
-フォームの項目はinput入力の他、選択肢、複数行のinputを可能としたい。
-完成形では実際の案件のため、カラム項目数がかなり多いため
-練習が目的であれば、いくつか選択して実装する形でも構いません。
+フォーム画面からDBに情報を登録、変更、表示を行いたい。  
+フォームの項目はinput入力の他、選択肢、複数行のinputを可能としたい。  
+完成形では実際の案件のため、カラム項目数がかなり多いため  
+練習が目的であれば、いくつか選択して実装する形でも構いません。  
 
 #### Task
-上記の要件に対してフォーム画面を実装してください。
-1. settingアプリにmodels、forms、viewsフォルダを作成してください。
-2. sample_formモデルを作成してMigrateしてください(カラムの項目は完成品を参照)
-※なお、選択肢の項目はchoicesにで指定します。  
+上記の要件に対してフォーム画面を実装してください。  
+1. settingアプリにmodels、forms、viewsフォルダを作成してください。  
+2. sample_formモデルを作成してMigrateしてください(カラムの項目は完成品を参照)  
+※なお、選択肢の項目はchoicesにで指定します。   
 参考:https://qiita.com/ryu22e/items/37bf4f5f6b60ccccebe2
 2. FormをModelFormクラスを使用して作成して先程作成したModelと紐付けてください  
 参考:https://noumenon-th.net/programming/2019/11/07/django-modelform/
