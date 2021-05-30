@@ -273,6 +273,10 @@ Django既定では、ModelやViewは、models.pyやviews.pyといった１つの
 1. Viewを修正して、POSTでフォームの内容を更新できるようにしてください  
 参考:https://yuki.world/django-modelform-update-pitfall/
 
+#### 実装例
+setting/views/sample_form.py に実装例をアップしています。  
+TemplateViewを使用しており、Form、TableやCreate、Updateに関わらず  
+汎用的に対応できる実装となっております。  
 
 
 
