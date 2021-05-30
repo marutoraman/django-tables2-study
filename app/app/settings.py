@@ -32,7 +32,7 @@ if os.environ.get("DEBUG") == None:
 else:
     DEBUG =os.environ.get("DEBUG")
 
-ALLOWED_HOST = os.environ.get("ALLOWED_HOST").split(",")
+ALLOWED_HOST = os.environ.get("ALLOWED_HOST","").split(",")
 
 if not DEBUG:
     STATIC_ROOT='/usr/share/nginx/html/static'
