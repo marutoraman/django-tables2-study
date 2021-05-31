@@ -281,20 +281,20 @@ TemplateViewを使用しており、Form、TableやCreate、Updateに関わら�
 
 ### Tableへのデータ表示
 #### 実装したい要件
-メルカリ、ラクマらか商品データを収集しDBに登録された場合に
-DBに登録されている商品データをTable形式で表示させたい。
-テーブルは各行にチェックボックスを追加し選択できるようにし
-選択した行に対する削除をできるようにしたい。
-カラムには、画像やinput、buttonを設置できるようにしたい。
+メルカリ、ラクマらか商品データを収集しDBに登録された場合に  
+DBに登録されている商品データをTable形式で表示させたい。  
+テーブルは各行にチェックボックスを追加し選択できるようにし  
+選択した行に対する削除をできるようにしたい。  
+カラムには、画像やinput、buttonを設置できるようにしたい。  
 
 #### Task
-上記の要件を満たすTableを実装してください。
+上記の要件を満たすTableを実装してください。  
 1. 各アプリ内にtablesフォルダを作成して、この中に各tableの定義を行えるようにpyファイルを作成してください。
 2. django-tables2をinstallして、settingsのINSTALLED_APPSに「django_tables2」と追記してください
-3. メルカリやラクマから取得した商品のの情報を管理するためのテーブル(model)を作成してください。
-必須項目：ツールのアカウント名、商品名、価格、商品の個別ID、画像×４、メルカリかラクマかの判別
-4. tablesフォルダ内に以下のようにpyファイルを作成してください
-tablesフォルダ内に作成したpyファイル
+3. メルカリやラクマから取得した商品のの情報を管理するためのテーブル(model)を作成してください。  
+必須項目：ツールのアカウント名、商品名、価格、商品の個別ID、画像×４、メルカリかラクマかの判別  
+4. tablesフォルダ内に以下のようにpyファイルを作成してください  
+tablesフォルダ内に作成したpyファイル  
 ```
 import django_tables2 as tables
 from django_tables2.utils import Accessor
@@ -309,8 +309,8 @@ class ItemTable(tables.Table):
         fields = (<modelで定義したカラム名を羅列>) 
 ```
 5. viewにTableを表示するためのクラスを作成してください
-SigleTableViewクラスもしくはTemplateViewクラスを継承したクラスを使用するとtableを簡単に表示させることができます。
-GET処理の流れ(TemplateViewクラスの場合)
+SigleTableViewクラスもしくはTemplateViewクラスを継承したクラスを使用するとtableを簡単に表示させることができます。  
+GET処理の流れ(TemplateViewクラスの場合)  
 - Modelからデータを取得
 - 作成したTableクラスのインスタンスにmodelをクエリした結果をセット
 - table等のkeyで辞書を作成して上記のTableクラスのインスタンスをセット
@@ -327,21 +327,21 @@ GET処理の流れ(TemplateViewクラスの場合)
 
 ### スクレイピングによるデータ取得
 #### 実装したい要件
-requestsライブラリを使用して、メルカリ、ラクマからスクレイピングして
-商品データをDBに格納します。
-スクレイピング処理側はDjangoとは別プロセスで通常のPythonとして実行する。
-DBとの連携はSQLAlchemyを使用して効率的に実装する。
+requestsライブラリを使用して、メルカリ、ラクマからスクレイピングして  
+商品データをDBに格納します。  
+スクレイピング処理側はDjangoとは別プロセスで通常のPythonとして実行する。  
+DBとの連携はSQLAlchemyを使用して効率的に実装する。  
 
 #### Task
 1. SQLAlchemyをinstallしてください
 ```
 pip install SQLAlchemy mysqlclient
 ```
-※requirements.txtでインストール済の場合はスキップされます。
+※requirements.txtでインストール済の場合はスキップされます。  
 
 2. データベース設定ファイルを以下のpyファイルのように作成してください。
-この設定のカスタマイズは難しいので、一旦は定型文として使用してください。
-SQLALCHEMY_DATABASE_URLの設定は環境によって変更できます。
+この設定のカスタマイズは難しいので、一旦は定型文として使用してください。  
+SQLALCHEMY_DATABASE_URLの設定は環境によって変更できます。  
 ```
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.ext.declarative import declarative_base
