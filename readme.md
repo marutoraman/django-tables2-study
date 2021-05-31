@@ -259,7 +259,7 @@ Django既定では、ModelやViewは、models.pyやviews.pyといった１つの
 練習が目的であれば、いくつか選択して実装する形でも構いません。  
 
 #### Task
-上記の要件に対してフォーム画面を実装してください。  
+上記の要件を満たすフォーム画面を実装してください。  
 1. settingアプリにmodels、forms、viewsフォルダを作成してください。  
 2. sample_formモデルを作成してMigrateしてください(カラムの項目は完成品を参照)  
 ※なお、選択肢の項目はchoicesにで指定します。   
@@ -279,16 +279,122 @@ TemplateViewを使用しており、Form、TableやCreate、Updateに関わら�
 汎用的に対応できる実装となっております。  
 
 
+### Tableへのデータ表示
+#### 実装したい要件
+メルカリ、ラクマらか商品データを収集しDBに登録された場合に
+DBに登録されている商品データをTable形式で表示させたい。
+テーブルは各行にチェックボックスを追加し選択できるようにし
+選択した行に対する削除をできるようにしたい。
+カラムには、画像やinput、buttonを設置できるようにしたい。
 
-=====
+#### Task
+上記の要件を満たすTableを実装してください。
+1. 各アプリ内にtablesフォルダを作成して、この中に各tableの定義を行えるようにpyファイルを作成してください。
+2. django-tables2をinstallして、settingsのINSTALLED_APPSに「django_tables2」と追記してください
+3. メルカリやラクマから取得した商品のの情報を管理するためのテーブル(model)を作成してください。
+必須項目：ツールのアカウント名、商品名、価格、商品の個別ID、画像×４、メルカリかラクマかの判別
+4. tablesフォルダ内に以下のようにpyファイルを作成してください
+tablesフォルダ内に作成したpyファイル
+```
+import django_tables2 as tables
+from django_tables2.utils import Accessor
+
+class ItemTable(tables.Table):
+    
+    class Meta:
+        model = <modelクラス>
+        template_name = 'django_tables2/bootstrap4.html'
+        orderable = False
+        
+        fields = (<modelで定義したカラム名を羅列>) 
+```
+5. viewにTableを表示するためのクラスを作成してください
+SigleTableViewクラスもしくはTemplateViewクラスを継承したクラスを使用するとtableを簡単に表示させることができます。
+GET処理の流れ(TemplateViewクラスの場合)
+- Modelからデータを取得
+- 作成したTableクラスのインスタンスにmodelをクエリした結果をセット
+- table等のkeyで辞書を作成して上記のTableクラスのインスタンスをセット
+
+1. templatesにtableを表示するためのタグを記述し、WebページにTableが表示されることを確認してください
+```
+<!-- 個別ページhtml上部に記述 -->
+{% load render_table from django_tables2 %}
+
+<!-- 個別ページhtmlのテーブルを表示させたい場所に記述 -->
+{% render_table table %}
+```
+7. DBに直接色々なデータを登録して、Tableに表示されることを確認してください。
+
+### スクレイピングによるデータ取得
+#### 実装したい要件
+requestsライブラリを使用して、メルカリ、ラクマからスクレイピングして
+商品データをDBに格納します。
+スクレイピング処理側はDjangoとは別プロセスで通常のPythonとして実行する。
+DBとの連携はSQLAlchemyを使用して効率的に実装する。
+
+#### Task
+1. SQLAlchemyをinstallしてください
+```
+pip install SQLAlchemy mysqlclient
+```
+※requirements.txtでインストール済の場合はスキップされます。
+
+2. データベース設定ファイルを以下のpyファイルのように作成してください。
+この設定のカスタマイズは難しいので、一旦は定型文として使用してください。
+SQLALCHEMY_DATABASE_URLの設定は環境によって変更できます。
+```
+from sqlalchemy import create_engine, MetaData
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker,scoped_session,Session
+import os
+import ulid
+
+SQLALCHEMY_DATABASE_URL = "mysql+pymysql://docker:docker@localhost:43306/docker"
+SQLALCHEMY_DATABASE_URL += '?charset=utf8mb4'
+engine = create_engine(SQLALCHEMY_DATABASE_URL, pool_recycle=360,pool_size=100)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+Base = declarative_base(bind=engine)
+session = scoped_session(SessionLocal)
+
+
+# Dependency
+def get_db():
+  db = SessionLocal()
+  try:
+    yield db
+  finally:
+    db.close() # pylint: disable=no-member
+
+def get_db_instance():
+  return SessionLocal()
+
+'''
+def clean_db():
+  metadata = MetaData()
+  metadata.reflect(bind=engine)
+  engine.execute("SET FOREIGN_KEY_CHECKS = 0")
+  for tbl in metadata.tables:
+    if tbl.find('manaus_') != 0: continue
+    engine.execute("DROP TABLE " + tbl)
+  engine.execute("SET FOREIGN_KEY_CHECKS = 1")
+'''
+
+def get_ulid():
+  return ulid.new().str
+
+```
+
+====================================================  
 ★★★★★★★★　　以降は作成中。　★★★★★★★★　　
-
-### Tableへのデータ表示、編集、削除(CRUD)
 ### Excel出力
 - openpyxlを使用してテンプレートExcelを読み込む。
 - 読み込んだExcelを編集する。
 - ExcelをWeb画面から出力(ダウンロード)できるようにする。
 ### Excelの各カラムとDBデータとの紐付けをテーブルで制御する
+
+
+
 
 ## スクレイピング
 ### SQLAlchemyの定義
