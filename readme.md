@@ -308,14 +308,14 @@ class ItemTable(tables.Table):
         
         fields = (<modelで定義したカラム名を羅列>) 
 ```
-5. viewにTableを表示するためのクラスを作成してください
+5. viewに新しいpyファイルを作成し、Tableを表示するためのクラスを作成してください
 SigleTableViewクラスもしくはTemplateViewクラスを継承したクラスを使用するとtableを簡単に表示させることができます。  
 GET処理の流れ(TemplateViewクラスの場合)  
 - Modelからデータを取得
 - 作成したTableクラスのインスタンスにmodelをクエリした結果をセット
 - table等のkeyで辞書を作成して上記のTableクラスのインスタンスをセット
 
-1. templatesにtableを表示するためのタグを記述し、WebページにTableが表示されることを確認してください
+1. templatesに新しいhtmlファイルを作成し、tableを表示するためのタグを記述し、WebページにTableが表示されることを確認してください
 ```
 <!-- 個別ページhtml上部に記述 -->
 {% load render_table from django_tables2 %}
@@ -341,7 +341,8 @@ pip install SQLAlchemy mysqlclient
 
 2. データベース設定ファイルを以下のpyファイルのように作成してください。
 この設定のカスタマイズは難しいので、一旦は定型文として使用してください。  
-SQLALCHEMY_DATABASE_URLの設定は環境によって変更できます。  
+SQLALCHEMY_DATABASE_URLの設定は環境によって変更できます。    
+database.py
 ```
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.ext.declarative import declarative_base
