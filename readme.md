@@ -335,7 +335,7 @@ DBとの連携はSQLAlchemyを使用して効率的に実装する。
 #### Task
 1. SQLAlchemyをinstallしてください
 ```
-pip install SQLAlchemy mysqlclient
+pip install SQLAlchemy pymysql
 ```
 ※requirements.txtでインストール済の場合はスキップされます。  
 
@@ -370,20 +370,173 @@ def get_db():
 def get_db_instance():
   return SessionLocal()
 
-'''
-def clean_db():
-  metadata = MetaData()
-  metadata.reflect(bind=engine)
-  engine.execute("SET FOREIGN_KEY_CHECKS = 0")
-  for tbl in metadata.tables:
-    if tbl.find('manaus_') != 0: continue
-    engine.execute("DROP TABLE " + tbl)
-  engine.execute("SET FOREIGN_KEY_CHECKS = 1")
-'''
-
 def get_ulid():
   return ulid.new().str
 
+```
+
+3. modelsファイルを作成してください。
+Djangoと同様にテーブルを定義するためのファイルですが
+記述方法がだいぶ異なります。
+
+```
+from datetime import datetime as dt
+from datetime import timedelta as delta
+from sqlalchemy import Column, String,Text ,DateTime, Float, Integer, ForeignKey, Boolean, func, update
+from sqlalchemy.dialects.mysql import LONGTEXT
+from sqlalchemy.sql.functions import current_timestamp
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql.type_api import STRINGTYPE
+from sqlalchemy_utils import UUIDType
+from pytz import timezone
+import ulid
+
+
+class SyuppinItem(Base):
+    __tablename__ = 't_syuppin_item'
+    mysql_charset = 'utf8mb4',
+    mysql_collate = 'utf8mb4_unicode_ci'
+
+    # Djangoで定義したテーブルに接続するため、全く同様の定義をSQLAlchemyの文法で記述する
+    # 以下は案件時の例のため、今回自身で実装するテーブルの定義に合わせて適宜編集する
+    id = Column('id', Integer, primary_key=True)
+    account_id = Column('account_id', String(100), nullable=False)
+    item_sku = Column('item_sku', String(32), nullable=False,default=ulid.new().str)
+    item_name = Column('item_name', String(256), nullable=False)
+    item_id = Column('item_id', String(64), nullable=False)
+    description = Column('description', String(4096), default="")
+    price = Column('price', Integer, default=0)
+    amazon_price = Column('amazon_price', Integer, default=0)
+    category = Column('category', String(50), nullable=True)
+    brand = Column('brand', String(50), nullable=True)
+    thumbnail_url = Column('thumbnail_url', String(256), nullable=True)
+    image_url1 = Column('image_url1', Text, nullable=True)
+    image_url2 = Column('image_url2', Text, nullable=True)
+    image_url3 = Column('image_url3', Text, nullable=True)
+    image_url4 = Column('image_url4', Text, nullable=True)
+    image_url5 = Column('image_url5', Text, nullable=True)
+    image_url6 = Column('image_url6', Text, nullable=True)
+    image_url7 = Column('image_url7', Text, nullable=True)
+    image_url8 = Column('image_url8', Text, nullable=True)
+    image_url9 = Column('image_url9', Text, nullable=True)
+    is_image1_selected = Column('is_image1_selected', String(10), default="checked")
+    is_image2_selected = Column('is_image2_selected', String(10), default="")
+    is_image3_selected = Column('is_image3_selected', String(10), default="")
+    is_image4_selected = Column('is_image4_selected', String(10), default="")
+    is_image5_selected = Column('is_image5_selected', String(10), default="")
+    is_image6_selected = Column('is_image6_selected', String(10), default="")
+    is_image7_selected = Column('is_image7_selected', String(10), default="")
+    is_image8_selected = Column('is_image8_selected', String(10), default="")
+    is_image9_selected = Column('is_image9_selected', String(10), default="")
+    is_image10_selected = Column('is_image10_selected', String(10), default="")
+    condition = Column('condition', String(20), nullable=True)
+    shipping_payment = Column('shipping_payment', String(20), nullable=True)
+    shipping_method = Column('shipping_method', String(20), nullable=True)
+    shipping_prefecture = Column('shipping_prefecture', String(20), nullable=True)
+    shipping_leadtime = Column('shipping_leadtime', String(20), nullable=True)
+    seller_name = Column('seller_name', String(50), nullable=True)
+    is_export_completed = Column('is_export_completed', Boolean, default=False)
+    is_alert = Column('is_alert', Boolean, default=False)
+    site = Column('site', String(20), nullable=False)
+    url = Column('url', Text)
+    created_at = Column('created_at', DateTime, nullable=False,
+                        default=current_timestamp())
+    updated_at = Column('updated_at', DateTime, nullable=False,
+                        default=current_timestamp(), onupdate=func.utc_timestamp())
+
+
+```
+
+4. メルカリからのスクレイピング
+requestsとBeautifulsoupを使用してスクレイピングします。  
+引数としてURLを与えた時に、requestsでメルカリの個別商品ページにアクセスしてBeautifulSoupで解析して、以下の情報を取得してください  
+必須：タイトル、価格、セラー名、画像URL、URL、item_id（urlに記載されている商品固有のID）、サイト名  
+任意：説明、発送方法、発送期間、発送元、発送負担元、カテゴリー、ブランド、商品状態
+
+なお、取得した商品情報は以下のような検索結果格納用のクラスを準備して格納しておくと、後々便利です。
+```python:agent/models/searched_item.py
+class SearchedItem():
+    
+    def __init__(self, 
+                 item_name:str, description:str, item_id:str, image_urls:list, thumbnail_url:str, category:str, 
+                 brand:str, condition:str, shipping_payment:str, shipping_method:str,
+                 shipping_prefecture:str, shipping_leadtime:str, seller_name:str, site:str, url:str, price:int):
+        self.item_name = item_name
+        self.description = description
+        self.item_id = item_id
+        self.image_urls = image_urls
+        self.thumbnail_url = thumbnail_url
+        self.category = category
+        self.brand = brand
+        self.condition = condition
+        self.shipping_payment = shipping_payment
+        self.shipping_method = shipping_method
+        self.shipping_prefecture = shipping_prefecture
+        self.shipping_leadtime = shipping_leadtime
+        self.seller_name = seller_name
+        self.is_remove = False
+        self.site = site
+        self.url = url
+        self.price = price
+        self.amazon_price = 0
+        
+```
+
+5. 複数のURLをLISTで与えた時に、全ての商品情報をスクレイピングできるようにしてください
+6. 取得した商品情報をDBに格納してください。
+１つの商品情報をInsertする場合の例
+```
+from agent.common.database import SessionLocal
+db:SessionLocal() # DBセッションをオープン
+item = SyuppinItem(<SearchedItemの値を入れる>) # 格納する商品レコードを作成
+db.query(item) # DBに追加 
+db.commit() # 変更を確定
+db.close() # DBをクローズ
+```
+
+7. 取得した商品情報が前の課題で作成したTableに表示されること確認してください。
+8. 取得する商品のURL一覧をフォーム画面から登録できるようにする
+- URL設定用のフォーム、モデルを作成して、TextAreaタグで複数行入力可能な入力欄を作成してください。
+- 複数行入力されたURLをPOSTした際に、入力文字列を\nでsplitして、各URLに分解して、それぞれを１レコードしてテーブルに格納してください。（なお、この方法ではPOSTする毎に古いURL設定は一旦全て削除して、改めてInsertしてください）
+9. スクレピング機能側でURL一覧を読み込んでスクレイピングできるようにしてください。
+なお、URL設定用のテーブル情報はDjango側だけでなく、SQLAlchemy用にも作成する必要があります。
+例）FetchURLテーブルを対象とし、アカウントIDを指定した、Select文の発行
+```
+# 末尾にall()をつけると、Select結果をListとして取得、Listの各要素にはFetchURLのレコードにアクセス可能なオブジェクトが格納されている。
+url_objects = db.query(FetchUrl).filter_by(account_id=<アカウントID>).all()
+for url_obj in url_objects:
+  print(url.obj.url) # URLを取得
+```
+
+10. テーブル表示のカスタマイズ
+tablesで定義したファイルを使って任意のHTMLを埋め込むことができます。
+１つの列に複数の項目を入れる、画像を見やすく表示するなど、自由にカスタマイズしてみましょう。
+
+例）商品情報を１つの列に複数入れる(サイト名、URLリンク、商品名、状態、出品者、ItemID)
+tables/syuppin.py
+```
+    # templateと同様の記述が可能。record.<modelsの項目名>で各項目にアクセスできる。
+    item_info_container = tables.TemplateColumn(
+         '{% if record.is_alert == 1 %}\
+            <i class="fas fa-exclamation-triangle fa-2x alert-icon mb-2"></i>\
+          {% endif %}\
+          {% if record.site == "mercari" %}\
+            <a href="{{record.url}}" target="_blank"><div class="mercari-icon">　</div></a>\
+          {% elif record.site == "rakuma" %}\
+            <a href="{{record.url}}" target="_blank"><div class="rakuma-icon">　</div></a>\
+          {% endif %}\
+          <a href="{{record.url}}" target="_blank">商品ページへ</a>\
+          <div><input class="form-control item-field" name="item_name" type="text" value="{{record.item_name}}" /></div>\
+          <div><span>【出品者】{{record.seller_name}}</span><span class="ml-2">【状態】{{record.condition}}</span></div>\
+          <div>(id: {{record.item_id}})</div>',
+          verbose_name="商品情報"
+    )
+
+    (～～略～～)
+
+    # 以下のように作成した新たな列名をfieldsに記述する
+      fields = ('checkbox', 'row_no', 'image_container', 'item_info_container', 
+            'price_container') 
 ```
 
 ====================================================  
@@ -393,14 +546,3 @@ def get_ulid():
 - 読み込んだExcelを編集する。
 - ExcelをWeb画面から出力(ダウンロード)できるようにする。
 ### Excelの各カラムとDBデータとの紐付けをテーブルで制御する
-
-
-
-
-## スクレイピング
-### SQLAlchemyの定義
-### スクレイピングengineの作成
-### スクレピング→DBデータ投入
-### DBでURLを指定したスクレピング
-### DBでキーワードを指定したスクレピング
-### DBで除外ワード等を指定したスクレピング結果の除外処理
