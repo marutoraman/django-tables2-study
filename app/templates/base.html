@@ -40,11 +40,11 @@
         <ul class="navbar-nav navbar-right">
           <li class="dropdown dropdown-list-toggle">
             <div class="nav-link nav-link-lg nav-link-user">
-              <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
+              {% comment %} <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
                 <img alt="image" src="{% static 'assets/img/avatar/avatar-1.png' %}" class="rounded-circle mr-1">
                 <div class="d-sm-none d-lg-inline-block">{{ user.account_id }}</div>
-              </a>
-              <div class="dropdown-menu dropdown-menu-right">
+              </a> {% endcomment %}
+              {% comment %} <div class="dropdown-menu dropdown-menu-right">
                 <a class="dropdown-item" href="{% url 'mypage:mypage' %}"><i class="far fa-address-card"></i> マイページ</a>
                 <a class="dropdown-item" href="{% url 'users:password_change' %}"><i class="far fa-address-card"></i>
                   パスワード変更</a>
@@ -52,7 +52,7 @@
                 {% if user.is_superuser %}
                 <a class="dropdown-item" href="/admin"><i class="fas fa-user-lock"></i> 管理者ページ</a>
                 {% endif %}
-              </div>
+              </div> {% endcomment %}
             </div>
           </li>
         </ul>
@@ -60,27 +60,22 @@
       <div class="main-sidebar">
         <aside id="sidebar-wrapper">
           <div class="sidebar-brand">
-            <a href="{% url 'mypage:manual' %}"><i></i>稼ぎMAX</a>
+            <a href=""><i></i>Django Sample</a>
           </div>
           <div class="sidebar-brand sidebar-brand-sm">
-            <a href="#">稼・M</a>
+            <a href="#">D・S</a>
           </div>
           <ul class="sidebar-menu">
             <li class="nav-item">
                <a href="#" data-toggle="dropdown" class="nav-link">
               <i
-                  class="fas fa-store"></i><span>出品管理</span></a>
+                  class="fas fa-store"></i><span>商品管理</span></a>
               <ul class=""></a>
-              {% if user.plan == "URL_PLAN" or user.plan == "ALL_PLAN" %}
-                <li><a class="nav-link" href="{% url 'setting:fetch-url' %}"><i class="far fa-file-word"></i>商品登録</a></li>
-              {% else %}
-                <li><a class="nav-link" href="{% url 'setting:search-word' %}"><i class="far fa-file-word"></i>商品登録</a></li>
-              {% endif %}
-                <li><a class="nav-link" href="{% url 'syuppin:list' %}"><i class="fas fa-table"></i>商品取得結果</a></li>
+                <li><a class="nav-link" href="{% url 'sample:list' %}"><i class="far fa-file-word"></i>商品一覧</a></li>
               </ul>
             </li>
           
-            <li class="nav-item">
+            {% comment %} <li class="nav-item">
               <a href="#" data-toggle="dropdown" class="nav-link"><i class="fas fa-cog"></i><span>設定</span></a>
               <ul class="">
                 <li><a class="nav-link" href="{% url 'setting:blacklist-word' %}"><i class="fas fa-ban"></i>除外設定</a></li>
@@ -88,13 +83,13 @@
                 <li><a class="nav-link" href="{% url 'setting:profit' %}"><i class="fas fa-yen-sign"></i>利益設定</a></li>
                 <li><a class="nav-link" href="{% url 'setting:common-setting' %}"><i class="fas fa-sliders-h"></i>出品共通項目設定</a></li>
               </ul>
-            </li>
+            </li> {% endcomment %}
 
-            <div class="mt-4 mb-4 p-3 hide-sidebar-mini ">
+            {% comment %} <div class="mt-4 mb-4 p-3 hide-sidebar-mini ">
               <a href="{% url 'mypage:manual' %}" class="btn btn-primary btn-lg btn-block btn-icon-split">
                 <i class="fas fa-book-open"></i> マニュアル
               </a>
-            </div>
+            </div> {% endcomment %}
           </ul>
         </aside>
       </div>

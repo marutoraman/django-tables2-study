@@ -1,0 +1,145 @@
+﻿{% extends 'base.html' %}
+{% load render_table from django_tables2 %}
+{% load static %}
+{% load mathfilters %}
+{% block title %} Sample {% endblock %}
+
+{% block contents %}
+<div class="">
+        <selection>
+            <div class="section-header">
+                <h1> Sample商品一覧 </h1>
+            </div>
+            <div>
+                <div class="container float-left w-100">
+		        <div class="row">
+			    <div class="col-12 col-md-12 col-lg-12 p-0">
+                <form id="main-form" class="form-horizontal" role="form" method="GET">
+                    {% csrf_token %}
+                    {% if messages %}
+                        <ul class="messages_ul">
+                            {% for message in messages %}
+                                <li class="alert{% if message.tags %} alert-{{ message.tags }}{% endif %} alert-dismissible text-dark" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    <div class="form-inline mt-1 p-0">
+                        <input name="item_name" class="form-control" placeholder="item_nameを指定">
+                        <button  name="search" class="btn btn-primary ml-2">検索</button>
+                    </div>
+                        
+                    <div class="control-label">商品件数：{{ record_count }}</div>
+                    <div class="table table-hover table-header-checkbox-hidden syuppin-item-table sticky-table mt-2">
+                        {% render_table table %}
+                    </div>
+                </form>
+            </div>
+         </selection>
+         </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+    // delete(AJAXでPOST処理)
+    $(document).ready(function (event) {
+        // 削除ボタンがクリックされたら
+        $("#delete").on('click', function (event) {
+            // チェックボックスの状態をサーバーに伝えるために要素を追加
+            var form = $('#main-form');
+            $('[name="checkbox"]:checked').map(function () {
+                $('<input>').attr({
+                    'type': 'hidden',
+                    'name': 'checkbox_selection',
+                    'value': $(this).val()
+                }).appendTo(form);
+            });
+            console.log(form)
+            form.submit();
+        });
+    });
+
+    // 全選択
+    $('#check_all').on('click', function() {
+        checkbox_list=document.getElementsByName("checkbox");
+        checkbox_list.forEach( checkbox => checkbox.checked=true );
+    });
+
+    // 全解除
+    $('#reset_all').on('click', function() {
+        checkbox_list=document.getElementsByName("checkbox");
+        checkbox_list.forEach( checkbox => checkbox.checked=false );
+    });
+
+    // 全削除時の警告
+    $('#delete-all').on('click', function(event) {
+        const res = window.confirm("全ページの商品を全て削除します。よろしいですか？削除した場合は復元できませんのでご注意ください。");
+        if(!res){
+            event.preventDefault();
+        }
+    });
+    
+
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+        
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        var csrftoken = getCookie('csrftoken');
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        $('[name="yahoo_account_id"]').change(function(event){
+            getAsinGroup()
+        });
+
+        // AsinGroupを取得する
+        function getAsinGroup(){
+            let yahoo_account_id = $('[name="yahoo_account_id"]').val();
+            if(yahoo_account_id != "__all__"){
+                $.ajax({
+                    'url': '/api/select-asin-group',
+                    'data': {"yahoo_account_id": yahoo_account_id},
+                    'type': 'GET',
+                    'dataType': 'json'
+                }).done(res => {
+                    $('[name="asin_group_id"] option').remove()
+                    for( let i in res){
+                        console.log(res)
+                        $('[name="asin_group_id"]').append(`<option value="${res[i][0]}">${res[i][1]}</option>`)
+                    }
+                })
+            }
+        }
+
+    })
+
+</script>
+
+{% endblock %}

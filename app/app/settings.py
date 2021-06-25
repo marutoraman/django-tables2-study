@@ -49,10 +49,8 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'django_tables2',
     'mathfilters',
-    'syuppin',
-    'setting',
-    'users',
-    'torihiki'
+    'sample',
+    'users'
 ]
 
 MIDDLEWARE = [
@@ -62,8 +60,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'app.middleware.auth.authMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
 
 # カスタムUserを指定
@@ -150,5 +147,3 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-LOGIN_REDIRECT_URL = '/mypage/manual'
-LOGIN_URL = 'login'
